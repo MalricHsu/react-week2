@@ -10,6 +10,8 @@ function App() {
   // const [token, setToken] = useState("");
   const [products, setProduct] = useState([]);
   const [initialProduct, setInitialProduct] = useState({});
+  const [message, setMessage] = useState("");
+  const [editing, setEditing] = useState(false);
 
   function handleInput(e) {
     // console.log(e.target.name);
@@ -47,8 +49,8 @@ function App() {
       alert("登入成功");
     } catch (err) {
       console.log(err);
-      alert(`${err.response?.data?.message}`);
       setIsAuth(false);
+      alert(`${err.response?.data?.message}`);
     }
   }
 
@@ -69,10 +71,12 @@ function App() {
     try {
       await axios.post(`${baseUrl}/v2/api/user/check`, {});
       // console.log(res.data);
-      alert("已驗證成功");
+      setEditing(false);
+      setMessage("驗證成功");
     } catch (error) {
       // console.log(error);
-      alert("已驗證失敗", error);
+      setMessage("驗證失敗", error);
+      setEditing(true);
       setIsAuth(false);
     }
   }
@@ -105,6 +109,9 @@ function App() {
               >
                 驗證登入
               </button>
+              <p className={`mt-3 ${editing ? "text-danger" : "text-success"}`}>
+                {message}
+              </p>
             </div>
           </div>
           <div className="row">
