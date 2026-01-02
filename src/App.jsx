@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 function App() {
   const [account, setAccount] = useState({
@@ -26,13 +26,6 @@ function App() {
   const baseUrl = import.meta.env.VITE_BASE_URL;
   const apiPath = import.meta.env.VITE_API_PATH;
 
-  //在外部定義axios的全域token
-  const applyToken = (token) => {
-    if (token) {
-      axios.defaults.headers.common["Authorization"] = token;
-    }
-  };
-
   async function handleLogin(e) {
     e.preventDefault();
     // console.log(account);
@@ -40,9 +33,11 @@ function App() {
       const res = await axios.post(`${baseUrl}/v2/admin/signin`, account);
       console.log(res.data);
       const { token, expired } = res.data;
+      // eslint-disable-next-line react-hooks/immutability
       document.cookie = `Token=${token}; expires=${new Date(expired)}`;
+      // eslint-disable-next-line react-hooks/immutability
+      axios.defaults.headers.common["Authorization"] = token;
       // console.log(document.cookie);
-      applyToken(token);
       setIsAuth(true);
       //登入後馬上取得資料
       getProduct();
@@ -80,20 +75,6 @@ function App() {
       setIsAuth(false);
     }
   }
-
-  useEffect(() => {
-    const token = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("Token="))
-      ?.split("=")[1];
-
-    if (token) {
-      applyToken(token); // 呼叫同一個函式
-      getProduct();
-    }
-    //只要有重整，都要拿得到token
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <>
