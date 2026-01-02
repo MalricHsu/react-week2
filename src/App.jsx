@@ -90,7 +90,6 @@ function App() {
     if (token) {
       applyToken(token); // 呼叫同一個函式
       getProduct();
-      checkLogin();
     }
     //只要有重整，都要拿得到token
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -109,9 +108,13 @@ function App() {
               >
                 驗證登入
               </button>
-              <p className={`mt-3 ${editing ? "text-danger" : "text-success"}`}>
-                {message}
-              </p>
+              {message && (
+                <p
+                  className={`mt-3 ${editing ? "text-danger" : "text-success"}`}
+                >
+                  {message}
+                </p>
+              )}
             </div>
           </div>
           <div className="row">
